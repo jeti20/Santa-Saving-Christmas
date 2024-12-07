@@ -26,12 +26,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        Move();
-    }
-
-
-    private void Move()
-    {
         // Get the keyboard inputs.
         float x = Input.GetAxisRaw("Horizontal") * moveSpeed;
         float z = Input.GetAxisRaw("Vertical") * moveSpeed;
@@ -42,7 +36,7 @@ public class PlayerController : MonoBehaviour
         // Create a temporary velocity vector and cancel out the Y.
         Vector3 vel = rig.linearVelocity;
         vel.y = 0;
-        Debug.Log(vel);
+
         // Je�li posta� si� porusza, ustaw isRunning na true, w przeciwnym wypadku na false
         animator.SetBool("isRunning", vel.magnitude > 0);
 
@@ -64,6 +58,7 @@ public class PlayerController : MonoBehaviour
         {
             GameOver();
         }
+        Debug.Log(isGrounded);
     }
 
 
