@@ -9,93 +9,122 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     private Rigidbody rig;
-    private Animator animator;
-    [SerializeField] private float minY;
-    private bool isGrounded;
+    //private Animator animator;
+    [SerializeField] private LayerMask groundLayerMask; // Warstwa dla ziemi i platform.
+    [SerializeField] private float groundCheckDistance = 0.1f; // Dystans Raycastów do sprawdzania ziemi.
+    [SerializeField] private float raycastOffset = 0.2f; // Przesunięcie Raycastów od środka gracza.
 
     public int score;
-
     public TextMeshProUGUI scoreText;
 
     private void Awake()
     {
         rig = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update ()
+    void Update()
     {
-        // Get the keyboard inputs.
+        // Odczyt wejść klawiatury.
         float x = Input.GetAxisRaw("Horizontal") * moveSpeed;
         float z = Input.GetAxisRaw("Vertical") * moveSpeed;
 
-        // Set out velocity (move the player).
+        // Ustawianie prędkości gracza.
         rig.linearVelocity = new Vector3(x, rig.linearVelocity.y, z);
 
-        // Create a temporary velocity vector and cancel out the Y.
+        // Sprawdzanie prędkości dla animacji biegania.
         Vector3 vel = rig.linearVelocity;
         vel.y = 0;
+        //animator.SetBool("isRunning", vel.magnitude > 0);
 
-        // Je�li posta� si� porusza, ustaw isRunning na true, w przeciwnym wypadku na false
-        animator.SetBool("isRunning", vel.magnitude > 0);
-
-        // If we are moving, rotate to face that direction.
+        // Obrót w kierunku ruchu.
         if (vel.x != 0 || vel.z != 0)
         {
             transform.forward = vel;
         }
 
-        // If we press SPACE and we are on the ground, jump.
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
+        // Skok, jeśli gracz jest na ziemi i naciśnięto spację.
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
-            isGrounded = false;
             rig.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
-        
-        // If we are below the level, game over.
+
+        // Restart poziomu, jeśli gracz spadnie poniżej pewnej wysokości.
         if (transform.position.y < -15)
         {
             GameOver();
         }
-
     }
 
+    private bool IsGrounded()
+    {
+        // Definiowanie pozycji Raycastów (cztery rogi podstawy gracza).
+        Vector3[] raycastOrigins = new Vector3[]
+        {
+            transform.position + (transform.forward * raycastOffset) + (Vector3.up * 0.01f), // Przód
+            transform.position + (-transform.forward * raycastOffset) + (Vector3.up * 0.01f), // Tył
+            transform.position + (transform.right * raycastOffset) + (Vector3.up * 0.01f), // Prawo
+            transform.position + (-transform.right * raycastOffset) + (Vector3.up * 0.01f) // Lewo
+        };
+
+        // Sprawdzanie każdego Raycasta.
+        foreach (var origin in raycastOrigins)
+        {
+            if (Physics.Raycast(origin, Vector3.down, groundCheckDistance, groundLayerMask))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private void OnCollisionEnter(Collision collision)
-{
-    // Jeśli zderzamy się z ziemią lub platformą, ustaw isGrounded na true.
-    if (collision.GetContact(0).normal == Vector3.up)
     {
-        isGrounded = true;
+        // Jeśli gracz wchodzi na ruchomą platformę.
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(collision.transform); // Ustawienie rodzica na platformę.
+        }
     }
 
-    // Jeśli gracz wchodzi na ruchomą platformę.
-    if (collision.gameObject.CompareTag("MovingPlatform"))
+    private void OnCollisionExit(Collision collision)
     {
-        transform.SetParent(collision.transform); // Ustawienie rodzica na platformę.
+        // Jeśli gracz opuszcza platformę.
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(null); // Usunięcie rodzica.
+        }
     }
-}
 
-private void OnCollisionExit(Collision collision)
-{
-    // Jeśli gracz opuszcza platformę.
-    if (collision.gameObject.CompareTag("MovingPlatform"))
+    public void GameOver()
     {
-        transform.SetParent(null); // Usunięcie rodzica.
-    }
-}
-
-    // Called when an enemy hits us, or we fall off the level.
-    public void GameOver ()
-    {
+        // Restart sceny.
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    // Called when we collect a coin.
-    public void AddScore (int amount)
+    public void AddScore(int amount)
     {
         score += amount;
         scoreText.text = score.ToString();
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Wizualizacja Raycastów w trybie edycji.
+        Gizmos.color = Color.red;
+
+        Vector3[] raycastOrigins = new Vector3[]
+        {
+            transform.position + (transform.forward * raycastOffset) + (Vector3.up * 0.01f),
+            transform.position + (-transform.forward * raycastOffset) + (Vector3.up * 0.01f),
+            transform.position + (transform.right * raycastOffset) + (Vector3.up * 0.01f),
+            transform.position + (-transform.right * raycastOffset) + (Vector3.up * 0.01f)
+        };
+
+        foreach (var origin in raycastOrigins)
+        {
+            Gizmos.DrawRay(origin, Vector3.down * groundCheckDistance);
+        }
     }
 }

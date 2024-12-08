@@ -6,16 +6,14 @@ public class FallingPlatform : MonoBehaviour
 {
     public float fallDelay = 1.0f; // Czas opóŸnienia przed spadniêciem.
     private Rigidbody rb;
+    private BoxCollider boxCollider;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        if (rb == null)
-        {
-            Debug.LogError("Platforma potrzebuje komponentu Rigidbody!");
-        }
+        boxCollider = GetComponent<BoxCollider>();
 
-        // Upewnij siê, ¿e Rigidbody jest ustawione na kinematyczne na pocz¹tku.
+
         rb.isKinematic = true;
     }
 
@@ -32,5 +30,7 @@ public class FallingPlatform : MonoBehaviour
     {
         yield return new WaitForSeconds(fallDelay); // Odczekaj okreœlony czas.
         rb.isKinematic = false; // Ustaw isKinematic na false, by platforma zaczê³a spadaæ.
+        boxCollider.enabled = false;
+
     }
 }

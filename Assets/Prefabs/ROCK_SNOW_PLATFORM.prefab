@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2817609226382699548}
   - component: {fileID: 5905572561778386849}
   - component: {fileID: 4805638683203177773}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ROCK_SNOW_PLATFORM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776302311459730674}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: f5b2ba48cfe60e847981cb433164b78e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
