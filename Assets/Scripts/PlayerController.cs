@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce;
     private Rigidbody rig;
     private Animator animator;
-
+    [SerializeField] private float minY;
     private bool isGrounded;
 
     public int score;
@@ -52,24 +52,39 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
             rig.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
-
+        
         // If we are below the level, game over.
-        if (transform.position.y < -5)
+        if (transform.position.y < -15)
         {
             GameOver();
         }
-        Debug.Log(isGrounded);
+
     }
 
 
-    private void OnCollisionEnter (Collision collision)
+    private void OnCollisionEnter(Collision collision)
+{
+    // Jeśli zderzamy się z ziemią lub platformą, ustaw isGrounded na true.
+    if (collision.GetContact(0).normal == Vector3.up)
     {
-        // If we collided with a ground surface, we are grounded.
-        if(collision.GetContact(0).normal == Vector3.up)
-        {
-            isGrounded = true;
-        }
+        isGrounded = true;
     }
+
+    // Jeśli gracz wchodzi na ruchomą platformę.
+    if (collision.gameObject.CompareTag("MovingPlatform"))
+    {
+        transform.SetParent(collision.transform); // Ustawienie rodzica na platformę.
+    }
+}
+
+private void OnCollisionExit(Collision collision)
+{
+    // Jeśli gracz opuszcza platformę.
+    if (collision.gameObject.CompareTag("MovingPlatform"))
+    {
+        transform.SetParent(null); // Usunięcie rodzica.
+    }
+}
 
     // Called when an enemy hits us, or we fall off the level.
     public void GameOver ()
