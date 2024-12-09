@@ -904,7 +904,7 @@ GameObject:
   - component: {fileID: 95094322390652052}
   - component: {fileID: 743451366184739726}
   - component: {fileID: 9040258034414121369}
-  - component: {fileID: 8315460253833255674}
+  - component: {fileID: 3327615750088961239}
   m_Layer: 0
   m_Name: Santa_Claus_LW
   m_TagString: Player
@@ -970,7 +970,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 0.36
   m_Height: 2.7776036
   m_Direction: 1
   m_Center: {x: -0.03139007, y: 1.3711691, z: 0}
@@ -986,11 +986,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50bc02a7d49f3844b95ce6bcb1cb3cc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
-  jumpForce: 6
+  moveSpeed: 5
+  jumpForce: 7
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckDistance: 0.1
+  raycastOffset: 0.2
   score: 0
   scoreText: {fileID: 0}
---- !u!54 &8315460253833255674
+--- !u!54 &3327615750088961239
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -998,7 +1003,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1689455102317406}
   serializedVersion: 4
-  m_Mass: 1.2
+  m_Mass: 1.3
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

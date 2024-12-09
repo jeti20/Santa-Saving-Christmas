@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     private Rigidbody rig;
-    //private Animator animator;
+    private Animator animator;
     [SerializeField] private LayerMask groundLayerMask; // Warstwa dla ziemi i platform.
     [SerializeField] private float groundCheckDistance = 0.1f; // Dystans Raycastów do sprawdzania ziemi.
     [SerializeField] private float raycastOffset = 0.2f; // Przesunięcie Raycastów od środka gracza.
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rig = GetComponent<Rigidbody>();
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
         // Sprawdzanie prędkości dla animacji biegania.
         Vector3 vel = rig.linearVelocity;
         vel.y = 0;
-        //animator.SetBool("isRunning", vel.magnitude > 0);
+        animator.SetBool("isRunning", vel.magnitude > 0);
 
         // Obrót w kierunku ruchu.
         if (vel.x != 0 || vel.z != 0)
