@@ -1,5 +1,7 @@
 # Santa-Saving-Christmas
 
+You can play the game on Itch.io ---> https://dehydrogenase.itch.io/
+
 A platform game in which you have to collect gifts, avoid enemies and reach the Christmas tree.
 
 ![image](https://github.com/user-attachments/assets/4d166694-1139-4a19-b325-8e314175daeb)
